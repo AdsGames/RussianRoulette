@@ -237,6 +237,7 @@ void game(){
   // Draw some stuff
   rectfill( gun, 0, 0, 1000, 540, makecol( 255, 0, 255));
   draw_sprite(buffer,background,0,0);
+  //rectfill(buffer,0,0,SCREEN_W,SCREEN_H,makecol(255,255,255));
 
   rotate_sprite(gun, hammer, 554, 26, itofix(angle_trigger-angle_trigger*2));
   rotate_sprite(gun, trigger, 576, 185, itofix(angle_trigger));
@@ -270,7 +271,7 @@ void game(){
   rest(10);
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
-  textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
+  //textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
   draw_sprite(buffer,cursor,mouse_x,mouse_y);
   draw_sprite(screen,buffer,0,0);
 }
