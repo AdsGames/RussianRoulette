@@ -324,8 +324,30 @@ void game(){
   if(location_clicked(440,490,500,540) && button_step>9){
     button_step=0;
     wheel_in=false;
+    if(sound){
+      play_sample(shell_drop,255,125,1000,0);
+      play_sample(shell_drop,255,125,750,0);
+      play_sample(shell_drop,255,125,1250,0);
+    }
     for(int i=0; i<9; i++){
       shell[i].state=blank;
+    }
+  }
+  //Fill button
+  rectfill(buffer,490,500,530,539,makecol(255,255,255));
+  rect(buffer,490,500,530,539,makecol(0,0,0));
+  textprintf_ex(buffer,font,495,517,makecol(0,0,0),makecol(0,-1,0),"Fill");
+
+  //Click handler for fill button
+  if(location_clicked(490,530,500,540) && button_step>9){
+    button_step=0;
+    if(sound){
+      play_sample(shell_click,255,125,1000,0);
+      play_sample(shell_click,255,125,750,0);
+      play_sample(shell_click,255,125,1250,0);
+    }
+    for(int i=0; i<9; i++){
+      shell[i].state=full;
     }
   }
 
@@ -333,6 +355,9 @@ void game(){
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
   //textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
+  //rectfill()
+  textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"Keys 1-8 to insert/remove shells",wheelLocation );
+
   draw_sprite(buffer,cursor,mouse_x,mouse_y);
   draw_sprite(screen,buffer,0,0);
 
