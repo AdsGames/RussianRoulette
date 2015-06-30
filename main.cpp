@@ -309,10 +309,26 @@ void game(){
     rectfill(buffer,410,515,420,525,makecol(255,0,0));
     triangle(buffer,410,520,423,530,423,510,makecol(255,0,0));
   }
+
+  //Click handler for sound button
   if(location_clicked(400,440,500,540) && button_step>9){
     button_step=0;
     sound=!sound;
   }
+  //Clear button
+  rectfill(buffer,440,500,490,539,makecol(255,255,255));
+  rect(buffer,440,500,490,539,makecol(0,0,0));
+  textprintf_ex(buffer,font,445,517,makecol(0,0,0),makecol(0,-1,0),"Clear");
+
+  //Click handler for clear button
+  if(location_clicked(440,490,500,540) && button_step>9){
+    button_step=0;
+    wheel_in=false;
+    for(int i=0; i<9; i++){
+      shell[i].state=blank;
+    }
+  }
+
 
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
