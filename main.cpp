@@ -48,10 +48,16 @@ bool wheel_in;
 bool spin;
 bool trigger_click;
 
+bool close_button_pressed;
+
 struct shells{
    int state;
 }shell[8];
 
+void close_button_handler(void){
+  close_button_pressed = TRUE;
+}
+END_OF_FUNCTION(close_button_handler)
 
 int roundUp(int numToRound, int multiple) {
   if(numToRound < 0){
@@ -268,12 +274,21 @@ void game(){
     rotate_sprite( buffer, cylinder, 40, 250, itofix(angle));
   }
 
-  rest(10);
+  //Sound button
+  rectfill(buffer,400,500,440,539,makecol(255,255,255));
+  rect(buffer,400,500,440,539,makecol(0,0,0));
+  rectfill(buffer,410,515,420,525,makecol(0,0,0));
+
+
+
+
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
   //textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
   draw_sprite(buffer,cursor,mouse_x,mouse_y);
   draw_sprite(screen,buffer,0,0);
+
+  rest(10);
 }
 
 void setup(){
@@ -283,6 +298,10 @@ void setup(){
   cylinder = create_bitmap( 200, 200);
 
   wheelLocation = 1;
+
+  // Close button
+  LOCK_FUNCTION(close_button_handler);
+  set_close_button_callback(close_button_handler);
 
   //Import bitmap images
   if (!(cursor = load_bitmap("images/cursor.bmp", NULL))){
@@ -355,7 +374,7 @@ int main(){
   set_window_title("Russian Roulette");
 
   //Run game until ESC key is pressed
-  while(!key[KEY_ESC]){
+  while(!key[KEY_ESC] && !close_button_pressed ){
     game();
   }
   return 0;
