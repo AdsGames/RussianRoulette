@@ -43,10 +43,13 @@ int trigger_loop;
 int click_x;
 int wheelLocation;
 int step;
+int button_step;
 
 bool wheel_in;
 bool spin;
 bool trigger_click;
+
+bool sound=true;
 
 bool close_button_pressed;
 
@@ -82,6 +85,12 @@ int random(int newLowest, int newHighest){
   return randomNumber;
 }
 
+//Check to see if an area is clicked
+bool location_clicked(int min_x,int max_x,int min_y,int max_y){
+    if(mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && mouse_b & 1)
+        return true;
+    else return false;
+}
 
 void game(){
   // Pull back trigger
@@ -117,16 +126,16 @@ void game(){
     angle_trigger=0;
 
     if(!wheel_in){
-      play_sample(dryfire,255,125,1000,0);
+      if(sound)play_sample(dryfire,255,125,1000,0);
     }
     else{
       if( shell[wheelLocation].state == full){
-        play_sample(fire,255,125,1000,0);
+        if(sound)play_sample(fire,255,125,1000,0);
         recoil = 10;
         shell[wheelLocation].state = shot;
       }
       else{
-        play_sample(dryfire,255,125,1000,0);
+        if(sound)play_sample(dryfire,255,125,1000,0);
       }
       angle += 32;
     }
@@ -162,7 +171,7 @@ void game(){
     }
     else{
       if( (int)speed == clickLoop ){
-        play_sample(click,255,125,1000,0);
+        if(sound)play_sample(click,255,125,1000,0);
         clickLoop += 1;
       }
       speed /= 3;
@@ -211,30 +220,37 @@ void game(){
   if(angle_255>255 && angle_255>0)angle_255-=255;
   if(angle_255>-255 && angle_255<0)angle_255+=255;
 
-  if(wheel_loop>9 && !wheel_in && key[KEY_E]){wheel_in=true; wheel_loop=0; play_sample(wheel_close,255,125,1000,0);}
-  if(wheel_loop>9 && wheel_in && key[KEY_E]){wheel_in=false; wheel_loop=0; play_sample(wheel_open,255,125,1000,0);}
+  if(wheel_loop>9 && !wheel_in && key[KEY_E]){
+      wheel_in=true; wheel_loop=0;
+      if(sound)play_sample(wheel_close,255,125,1000,0);
+  }
+
+  if(wheel_loop>9 && wheel_in && key[KEY_E]){
+      wheel_in=false; wheel_loop=0;
+      if(sound)play_sample(wheel_open,255,125,1000,0);
+  }
 
   wheel_loop++;
 
 
 
   // Put in some bullets
-  if(key[KEY_1] && toggle_loop>9 && shell[1].state==blank){shell[1].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_1] && toggle_loop>9 && shell[1].state!=blank){shell[1].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_2] && toggle_loop>9 && shell[2].state==blank){shell[2].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_2] && toggle_loop>9 && shell[2].state!=blank){shell[2].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_3] && toggle_loop>9 && shell[3].state==blank){shell[3].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_3] && toggle_loop>9 && shell[3].state!=blank){shell[3].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_4] && toggle_loop>9 && shell[4].state==blank){shell[4].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_4] && toggle_loop>9 && shell[4].state!=blank){shell[4].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_5] && toggle_loop>9 && shell[5].state==blank){shell[5].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_5] && toggle_loop>9 && shell[5].state!=blank){shell[5].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_6] && toggle_loop>9 && shell[6].state==blank){shell[6].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_6] && toggle_loop>9 && shell[6].state!=blank){shell[6].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_7] && toggle_loop>9 && shell[7].state==blank){shell[7].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_7] && toggle_loop>9 && shell[7].state!=blank){shell[7].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
-  if(key[KEY_8] && toggle_loop>9 && shell[8].state==blank){shell[8].state=full; toggle_loop=0;play_sample(shell_click,255,125,1000,0);}
-  if(key[KEY_8] && toggle_loop>9 && shell[8].state!=blank){shell[8].state=blank; toggle_loop=0;play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_1] && toggle_loop>9 && shell[1].state==blank){shell[1].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_1] && toggle_loop>9 && shell[1].state!=blank){shell[1].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_2] && toggle_loop>9 && shell[2].state==blank){shell[2].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_2] && toggle_loop>9 && shell[2].state!=blank){shell[2].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_3] && toggle_loop>9 && shell[3].state==blank){shell[3].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_3] && toggle_loop>9 && shell[3].state!=blank){shell[3].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_4] && toggle_loop>9 && shell[4].state==blank){shell[4].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_4] && toggle_loop>9 && shell[4].state!=blank){shell[4].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_5] && toggle_loop>9 && shell[5].state==blank){shell[5].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_5] && toggle_loop>9 && shell[5].state!=blank){shell[5].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_6] && toggle_loop>9 && shell[6].state==blank){shell[6].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_6] && toggle_loop>9 && shell[6].state!=blank){shell[6].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_7] && toggle_loop>9 && shell[7].state==blank){shell[7].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_7] && toggle_loop>9 && shell[7].state!=blank){shell[7].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
+  if(key[KEY_8] && toggle_loop>9 && shell[8].state==blank){shell[8].state=full; toggle_loop=0; if(sound)play_sample(shell_click,255,125,1000,0);}
+  if(key[KEY_8] && toggle_loop>9 && shell[8].state!=blank){shell[8].state=blank; toggle_loop=0; if(sound)play_sample(shell_drop,255,125,random(600,1200),0);}
 
   toggle_loop++;
 
@@ -274,19 +290,37 @@ void game(){
     rotate_sprite( buffer, cylinder, 40, 250, itofix(angle));
   }
 
-  //Sound button
+  //Sound button (in primitives, because screw bitmaps)
   rectfill(buffer,400,500,440,539,makecol(255,255,255));
   rect(buffer,400,500,440,539,makecol(0,0,0));
-  rectfill(buffer,410,515,420,525,makecol(0,0,0));
 
+  if(sound){
+    rectfill(buffer,410,515,420,525,makecol(0,0,0));
+    triangle(buffer,410,520,423,530,423,510,makecol(0,0,0));
+    line(buffer,425,505,430,510,makecol(0,0,0));
+    line(buffer,430,510,430,530,makecol(0,0,0));
+    line(buffer,430,530,425,535,makecol(0,0,0));
+    line(buffer,427,502,435,510,makecol(0,0,0));
+    line(buffer,435,510,435,530,makecol(0,0,0));
+    line(buffer,435,530,428,537,makecol(0,0,0));
+  }
 
-
+  if(!sound){
+    rectfill(buffer,410,515,420,525,makecol(255,0,0));
+    triangle(buffer,410,520,423,530,423,510,makecol(255,0,0));
+  }
+  if(location_clicked(400,440,500,540) && button_step>9){
+    button_step=0;
+    sound=!sound;
+  }
 
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
   //textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
   draw_sprite(buffer,cursor,mouse_x,mouse_y);
   draw_sprite(screen,buffer,0,0);
+
+  button_step++;
 
   rest(10);
 }
