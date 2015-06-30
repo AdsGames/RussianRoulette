@@ -92,6 +92,13 @@ bool location_clicked(int min_x,int max_x,int min_y,int max_y){
     else return false;
 }
 
+bool location_clicked(BITMAP* buffer,int color,int min_x,int max_x,int min_y,int max_y){
+    rectfill(buffer,min_x,min_y,max_x,max_y,color);
+    if(mouse_x>min_x && mouse_x<max_x && mouse_y>min_y && mouse_y<max_y && mouse_b & 1)
+        return true;
+    else return false;
+}
+
 void game(){
   // Pull back trigger
   if(mouse_b & 1 && mouse_x<680 && mouse_x>550&& mouse_y>200 && mouse_y<400 &&  trigger_loop>9){
@@ -350,13 +357,24 @@ void game(){
       shell[i].state=full;
     }
   }
-
+  //Clickable wheel
+  if(location_clicked(510,650,70,250)&& button_step>9){
+    wheel_in=!wheel_in;
+    button_step=0;
+    if(sound && !wheel_in)play_sample(wheel_open,255,125,1000,0);
+    if(sound && wheel_in)play_sample(wheel_close,255,125,1000,0);
+  }
 
 
   pivot_sprite(buffer,gun, 740, 190, 740, 190, itofix(recoil));
   //textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"wheelLocation:%i",wheelLocation );
-  //rectfill()
-  textprintf_ex(buffer,font,20,20,makecol(255,255,255),makecol(0,-1,0),"Keys 1-8 to insert/remove shells",wheelLocation );
+
+  //Keys 1-8 instructions
+  rectfill(buffer,345,485,610,500,makecol(255,255,255));
+  rect(buffer,345,485,610,500,makecol(0,0,0));
+  textprintf_ex(buffer,font,350,490,makecol(0,0,0),makecol(0,-1,0),"Keys 1-8 to insert/remove shells",wheelLocation );
+
+
 
   draw_sprite(buffer,cursor,mouse_x,mouse_y);
   draw_sprite(screen,buffer,0,0);
